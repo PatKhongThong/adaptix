@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import json
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -19,66 +20,45 @@ def run_command(command):
     except subprocess.CalledProcessError:
         return False
 
-import json
-
-def validate_gemini(key):
+def validate_key_via_venv(provider, key):
+    """Runs a tiny script inside the venv to validate the key."""
     if not key: return True
-    import google.generativeai as genai
-    try:
-        genai.configure(api_key=key)
+    
+    python_exe = os.path.join("venv", "Scripts", "python.exe")
+    script = f"""
+import sys
+try:
+    if "{provider}" == "gemini":
+        import google.generativeai as genai
+        genai.configure(api_key="{key}")
         model = genai.GenerativeModel('gemini-2.0-flash')
-        model.generate_content("test", generation_config={"max_output_tokens": 1})
-        return True
-    except Exception as e:
-        print(f"\033[91mGemini Error: {e}\033[0m")
-        return False
-
-def validate_openai(key):
-    if not key: return True
-    from openai import OpenAI
-    try:
-        client = OpenAI(api_key=key)
+        model.generate_content("test", generation_config={{"max_output_tokens": 1}})
+    else:
+        from openai import OpenAI
+        client = OpenAI(api_key="{key}")
         client.models.list()
+    sys.exit(0)
+except Exception as e:
+    print(e)
+    sys.exit(1)
+"""
+    with open("temp_val.py", "w") as f:
+        f.write(script)
+    
+    result = subprocess.run([python_exe, "temp_val.py"], capture_output=True, text=True)
+    if os.path.exists("temp_val.py"): os.remove("temp_val.py")
+    
+    if result.returncode == 0:
         return True
-    except Exception as e:
-        print(f"\033[91mOpenAI Error: {e}\033[0m")
+    else:
+        print(f"\033[91mValidation Error: {result.stdout.strip()}\033[0m")
         return False
 
 def main():
     clear_screen()
     print_banner()
 
-    print("\n[1/3] Configuring AI Services")
-    print("-" * 30)
-    
-    while True:
-        gemini_key = input("Enter Gemini API Key (press Enter to skip): ").strip()
-        if validate_gemini(gemini_key): break
-        print("\033[91mInvalid Gemini Key. Please try again.\033[0m")
-
-    while True:
-        openai_key = input("Enter OpenAI API Key (press Enter to skip): ").strip()
-        if validate_openai(openai_key): break
-        print("\033[91mInvalid OpenAI Key. Please try again.\033[0m")
-
-    pref_provider = input("\nWhich provider do you prefer as default? (Gemini/OpenAI): ").strip().lower()
-    if pref_provider not in ["gemini", "openai"]:
-        pref_provider = "gemini"
-
-    # Create .env file
-    print("\n[2/3] Saving Configuration...")
-    with open(".env", "w") as f:
-        if gemini_key:
-            f.write(f"GEMINI_API_KEY={gemini_key}\n")
-        if openai_key:
-            f.write(f"OPENAI_API_KEY={openai_key}\n")
-    
-    with open("config.json", "w") as f:
-        json.dump({"default_provider": pref_provider}, f)
-        
-    print("\033[92m✔ Configuration saved.\033[0m")
-
-    print("\n[3/3] Installing Dependencies (on D: drive)")
+    print("\n[1/3] Installing Dependencies (on D: drive)")
     print("-" * 30)
     
     # Set TEMP and TMP for D: drive to avoid C: space issues
@@ -100,6 +80,35 @@ def main():
     else:
         print("\033[91m✘ Failed to install dependencies.\033[0m")
         return
+
+    print("\n[2/3] Configuring AI Services")
+    print("-" * 30)
+    
+    while True:
+        gemini_key = input("Enter Gemini API Key (press Enter to skip): ").strip()
+        if validate_key_via_venv("gemini", gemini_key): break
+        print("\033[91mInvalid Gemini Key. Please try again.\033[0m")
+
+    while True:
+        openai_key = input("Enter OpenAI API Key (press Enter to skip): ").strip()
+        if validate_key_via_venv("openai", openai_key): break
+        print("\033[91mInvalid OpenAI Key. Please try again.\033[0m")
+
+    pref_provider = input("\nWhich provider do you prefer as default? (Gemini/OpenAI): ").strip().lower()
+    if pref_provider not in ["gemini", "openai"]:
+        pref_provider = "gemini"
+
+    print("\n[3/3] Saving Configuration...")
+    with open(".env", "w") as f:
+        if gemini_key:
+            f.write(f"GEMINI_API_KEY={gemini_key}\n")
+        if openai_key:
+            f.write(f"OPENAI_API_KEY={openai_key}\n")
+    
+    with open("config.json", "w") as f:
+        json.dump({"default_provider": pref_provider}, f)
+        
+    print("\033[92m✔ Configuration saved.\033[0m")
 
     print("\n" + "="*50)
     print("\033[92m🎉 SETUP COMPLETE!\033[0m")
