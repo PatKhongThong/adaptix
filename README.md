@@ -25,10 +25,11 @@ Adaptix is designed to be managed easily through **npm**.
 ### Setup
 1. Clone the repository to your local machine (recommended on `D:` drive if `C:` is low on space).
 2. Open your terminal in the project directory.
-3. Run the following command to set up the environment and install dependencies:
+3. Run the interactive setup to configure your AI keys and install dependencies:
    ```bash
    npm run setup
    ```
+   *The setup will prompt you for your Gemini/OpenAI keys and handle all installation automatically.*
 
 ---
 
