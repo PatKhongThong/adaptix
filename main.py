@@ -33,14 +33,11 @@ class AdaptixApp(ctk.CTk):
         self.provider_menu = ctk.CTkOptionMenu(self.sidebar_frame, values=["Gemini", "OpenAI"])
         self.provider_menu.grid(row=3, column=0, padx=20, pady=(0, 10))
 
-        self.api_key_entry = ctk.CTkEntry(self.sidebar_frame, placeholder_text="API Key", show="*")
-        self.api_key_entry.grid(row=4, column=0, padx=20, pady=10)
-
         self.start_button = ctk.CTkButton(self.sidebar_frame, text="Start Observing", command=self.toggle_observing)
-        self.start_button.grid(row=5, column=0, padx=20, pady=10)
+        self.start_button.grid(row=4, column=0, padx=20, pady=10)
 
         self.summary_button = ctk.CTkButton(self.sidebar_frame, text="Summarize Session", command=self.generate_summary, state="disabled")
-        self.summary_button.grid(row=6, column=0, padx=20, pady=10)
+        self.summary_button.grid(row=5, column=0, padx=20, pady=10)
 
         # Main Content
         self.main_frame = ctk.CTkFrame(self, corner_radius=15, fg_color="transparent")
@@ -60,13 +57,9 @@ class AdaptixApp(ctk.CTk):
 
     def toggle_observing(self):
         if not self.is_observing:
-            api_key = self.api_key_entry.get()
             provider = self.provider_menu.get().lower()
-            if not api_key:
-                self.log_msg("System: Please enter an API key.")
-                return
 
-            self.collector = AdaptixCollector(api_key=api_key, provider=provider)
+            self.collector = AdaptixCollector(provider=provider)
             self.is_observing = True
             self.session_insights = []
             self.start_button.configure(text="Stop Observing", fg_color="red")

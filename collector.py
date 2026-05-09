@@ -13,16 +13,16 @@ load_dotenv()
 
 class AdaptixCollector:
     def __init__(self, api_key=None, provider="gemini"):
-        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         self.provider = provider.lower()
-
         if self.provider == "gemini":
+            self.api_key = api_key or os.getenv("GEMINI_API_KEY")
             if self.api_key:
                 genai.configure(api_key=self.api_key)
                 self.model = genai.GenerativeModel('gemini-2.0-flash')
             else:
                 self.model = None
         elif self.provider == "openai":
+            self.api_key = api_key or os.getenv("OPENAI_API_KEY")
             if self.api_key:
                 self.client = OpenAI(api_key=self.api_key)
             else:
