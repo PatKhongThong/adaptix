@@ -79,13 +79,24 @@ class AdaptixApp(ctk.CTk):
 
     def view_history(self):
         try:
-            # Temporary collector to read memory if not already initialized
             temp_collector = self.collector or AdaptixCollector(provider=self.provider_menu.get().lower())
-            habits = temp_collector.memory.get("long_term_habits", "No history found.")
-
-            self.log_msg("\n--- LONG-TERM MEMORY & HABITS ---")
-            self.log_msg(habits)
-            self.log_msg("----------------------------------\n")
+            
+            self.log_msg("\n" + "="*40)
+            self.log_msg("📋 HISTORICAL SESSION ARCHIVE")
+            self.log_msg("="*40)
+            
+            sessions = temp_collector.memory.get("sessions", [])
+            if not sessions:
+                self.log_msg("No past sessions found.")
+            else:
+                for i, sess in enumerate(reversed(sessions)):
+                    self.log_msg(f"\n[{i+1}] SESSION: {sess.get('timestamp', 'Unknown Time')}")
+                    self.log_msg(f"Summary: {sess.get('summary', 'No summary')[:300]}...")
+            
+            self.log_msg("\n" + "="*40)
+            self.log_msg("🧠 LEARNED LONG-TERM HABITS")
+            self.log_msg(temp_collector.memory.get("long_term_habits", "None yet."))
+            self.log_msg("="*40 + "\n")
         except Exception as e:
             self.log_msg(f"Error loading history: {str(e)}")
 

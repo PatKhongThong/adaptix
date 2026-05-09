@@ -63,9 +63,14 @@ class AdaptixCollector:
         return {"sessions": [], "long_term_habits": "User is new."}
 
     def save_to_memory(self, session_data, summary):
-        self.memory["sessions"].append(session_data)
-        # We only keep the last 5 sessions to keep the prompt slim
-        self.memory["sessions"] = self.memory["sessions"][-5:]
+        import time
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        self.memory["sessions"].append({
+            "timestamp": timestamp,
+            "summary": summary
+        })
+        # Keep the last 20 sessions for history browsing
+        self.memory["sessions"] = self.memory["sessions"][-20:]
         self.memory["long_term_habits"] = summary
         
         try:
@@ -133,12 +138,13 @@ class AdaptixCollector:
         {self.memory.get('long_term_habits', 'No history yet.')}
 
         Task:
-        1. Identify exactly what the user is doing.
-        2. Categorize this behavior (e.g., Coding, Browsing, Gaming, Social).
-        3. Compare this to their known long-term habits. Are they sticking to them or doing something new?
+        1. Inspect the CONTENTS of the active window (e.g., search queries, specific messages, video titles, code snippets).
+        2. Identify exactly what the user is doing and the context (e.g., "Searching for React hooks on Google", "Messaging a friend about lunch").
+        3. Compare this to their known long-term habits.
         Keep it concise (1 sentence).
         """
-
+        
+        # Use the full screenshot for detail
         if self.provider == "gemini":
             if not self.model:
                 return "Gemini API Key not configured."
