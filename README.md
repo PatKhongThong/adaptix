@@ -46,15 +46,11 @@ Adaptix is designed to be managed easily through **npm**.
 
 ## 🎮 Usage
 
-You can launch Adaptix in two ways:
+You can launch Adaptix via terminal:
 
-### Via Terminal (Recommended)
 ```bash
 npm start
 ```
-
-### Via File Explorer
-Double-click the **`run_adaptix.bat`** file in the project folder.
 
 ---
 
