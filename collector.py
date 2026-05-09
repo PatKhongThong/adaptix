@@ -189,16 +189,13 @@ class AdaptixCollector:
         {combined_text}
 
         Task:
-        Provide a comprehensive behavioral report. Focus on:
-        1. **Apps & Environment**: What specific apps, websites, and tools did the user spend most time on?
-        2. **Communication**: Who did they talk to or interact with (based on window titles/content)?
-        3. **The Role**: Based on the technical and creative tools used, what is this person's likely job or primary goal today?
-        4. **Psychological Profile**: 
-           - What type of person are they (e.g., Deep Thinker, Fast Tasker, Procrastinator)?
-           - Estimated "Digital Age" (How mature/experienced do they seem with technology)?
-        5. **Productivity Audit**: One brutal truth and one constructive tip.
-
-        Keep the tone insightful, professional, and slightly analytical.
+        Provide a simple and friendly summary of this session. 
+        Focus on the positive aspects of the user's workflow:
+        1. **What you achieved**: A quick, 2-3 sentence summary of the main things they got done.
+        2. **Your Strengths**: Highlight 2-3 things the user is good at based on their focus (e.g., "Great at staying focused on code", "Very organized researcher").
+        3. **Friendly Tip**: One small, encouraging suggestion to help them even more.
+        
+        Avoid any negative or judgmental language. Keep it simple, clear, and very encouraging.
         """
 
         if self.provider == "gemini":

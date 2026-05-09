@@ -7,6 +7,7 @@
     "setup": "python setup.py",
     "rerun-setup": "python setup.py",
     "start": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\python main.py\"",
+    "build": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\pip install pyinstaller; .\\venv\\Scripts\\pyinstaller --noconsole --onefile --add-data 'venv/Lib/site-packages/customtkinter;customtkinter/' --name Adaptix main.py\"",
     "install-py": "npm run setup"
   },
   "author": "Adaptix Team",

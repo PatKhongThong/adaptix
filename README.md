@@ -52,6 +52,13 @@ You can launch Adaptix via terminal:
 npm start
 ```
 
+### Build a Standalone Windows App (.exe)
+If you want to run Adaptix as a standard Windows application without using the terminal, run:
+```bash
+npm run build
+```
+This will create an `Adaptix.exe` file inside the `dist/` folder.
+
 ---
 
 ## 🛠️ How It Works
