@@ -107,8 +107,12 @@ class AdaptixApp(ctk.CTk):
         while self.is_observing:
             try:
                 insight = self.collector.analyze_behavior()
-                self.session_insights.append(insight)
-                self.log_msg(f"AI: {insight}")
+                if insight.startswith("SKIP:"):
+                    # Log skip to UI but don't add to AI session insights
+                    self.log_msg(f"System: {insight} (API Saved)")
+                else:
+                    self.session_insights.append(insight)
+                    self.log_msg(f"AI: {insight}")
             except Exception as e:
                 self.log_msg(f"Error: {str(e)}")
 

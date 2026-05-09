@@ -3,7 +3,6 @@ import pyautogui
 import psutil
 import win32gui
 import win32process
-from PIL import Image
 import google.generativeai as genai
 from openai import OpenAI
 import base64
@@ -34,6 +33,11 @@ class AdaptixCollector:
         if not os.path.exists(self.temp_dir):
             os.makedirs(self.temp_dir)
 
+        # State for minimizing API usage
+        self.last_screenshot = None
+        self.last_window_title = None
+        self.change_threshold = 5.0  # Percentage of pixels that must change
+
     def get_active_window_info(self):
         try:
             window = win32gui.GetForegroundWindow()
@@ -45,13 +49,32 @@ class AdaptixCollector:
         except Exception:  # pylint: disable=broad-exception-caught
             return {"title": "Unknown", "app": "Unknown"}
 
-    def capture_screen(self):
-        screenshot = pyautogui.screenshot()
-        # Resize for faster processing and lower token usage
-        screenshot.thumbnail((1280, 720))
-        path = os.path.join(self.temp_dir, "last_capture.png")
-        screenshot.save(path)
-        return path
+    def has_changed(self, current_img, current_window_title):
+        # 1. Window Change is a guaranteed "interesting" event
+        if current_window_title != self.last_window_title:
+            return True, "Window changed"
+
+        # 2. Image Change Detection
+        if self.last_screenshot is None:
+            return True, "Initial capture"
+
+        # Resize both to small thumbnails for very fast comparison
+        size = (64, 64)
+        img1 = self.last_screenshot.resize(size).convert('L')
+        img2 = current_img.resize(size).convert('L')
+
+        # Calculate difference (RMSE)
+        import math
+        import operator
+        from functools import reduce
+
+        # Simple pixel difference check
+        diff = math.sqrt(reduce(operator.add, map(lambda a, b: (a - b)**2, img1.getdata(), img2.getdata())) / (size[0] * size[1]))
+        
+        if diff > self.change_threshold:
+            return True, f"Screen changed (diff: {diff:.2f})"
+
+        return False, "No significant change"
 
     def encode_image(self, image_path):
         with open(image_path, "rb") as image_file:
@@ -59,7 +82,22 @@ class AdaptixCollector:
 
     def analyze_behavior(self):
         window_info = self.get_active_window_info()
-        screenshot_path = self.capture_screen()
+        screenshot = pyautogui.screenshot()
+        
+        changed, reason = self.has_changed(screenshot, window_info['title'])
+        
+        # Update state
+        self.last_screenshot = screenshot
+        self.last_window_title = window_info['title']
+        
+        if not changed:
+            return f"SKIP: {reason}"
+
+        # If changed, proceed to AI analysis
+        # Resize for faster processing and lower token usage
+        screenshot.thumbnail((1280, 720))
+        path = os.path.join(self.temp_dir, "last_capture.png")
+        screenshot.save(path)
 
         prompt = f"""
         Analyze this computer activity.
@@ -76,14 +114,13 @@ class AdaptixCollector:
         if self.provider == "gemini":
             if not self.model:
                 return "Gemini API Key not configured."
-            img = Image.open(screenshot_path)
-            response = self.model.generate_content([prompt, img])
+            response = self.model.generate_content([prompt, screenshot])
             return response.text
 
         elif self.provider == "openai":
             if not self.client:
                 return "OpenAI API Key not configured."
-            base64_image = self.encode_image(screenshot_path)
+            base64_image = self.encode_image(path)
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
