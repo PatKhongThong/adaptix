@@ -1,0 +1,13 @@
+{
+  "name": "adaptix",
+  "version": "1.0.0",
+  "description": "AI Behavior Learning Tool",
+  "main": "main.py",
+  "scripts": {
+    "setup": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; python -m venv venv; .\\venv\\Scripts\\pip install pyautogui pillow google-generativeai psutil python-dotenv pywin32 customtkinter openai\"",
+    "start": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\python main.py\"",
+    "install-py": "npm run setup"
+  },
+  "author": "Adaptix Team",
+  "license": "Apache-2.0"
+}

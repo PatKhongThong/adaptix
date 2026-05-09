@@ -1,52 +1,70 @@
-# adaptix
+# 🧠 Adaptix AI
 
-An experimental AI project that studies computer usage patterns and habits to better understand how people interact with technology.
-
-## Overview
-
-adaptix AI is designed to analyze behavioral patterns such as:
-- Application usage
-- Typing habits
-- Workflow routines
-- Productivity patterns
-- Repeated actions
-- Time-based computer activity
-
-The goal of the project is to explore how AI can recognize habits and adapt to user behavior in useful and ethical ways.
+**Adaptix** is a premium, open-source AI tool that learns your computer habits and behaviors to provide insights into your productivity and workflow. It runs locally on your machine, capturing screen context and active application data to build a behavioral profile using state-of-the-art AI.
 
 ---
 
-## Features
+## ✨ Features
 
-- Activity pattern analysis
-- Habit recognition
-- Behavioral trend tracking
-- AI-based prediction experiments
-- Modular architecture for future expansion
-- Privacy-focused development goals
-
----
-
-## Technologies Used
-
-- Python
-- Machine Learning
-- Data Analysis
-- Neural Networks (experimental)
-- Local data processing
+- **Ultra-Fast Observation**: Captures snapshots of your screen every **2 seconds** for high-fidelity behavior tracking.
+- **Session Summarization**: Generate deep psychological profiles and productivity summaries at the end of every session.
+- **Dual AI Engine**: Support for both **Gemini 2.0 Flash** and **OpenAI GPT-4o**.
+- **Privacy First**: All data is processed using your personal API keys. Snapshots are stored locally on your machine.
+- **Premium Desktop UI**: A sleek, dark-mode interface built with CustomTkinter.
 
 ---
 
-## Project Goals
+## 🚀 Installation
 
-This repository is focused on:
-- Learning AI development
-- Experimenting with pattern recognition
-- Building intelligent automation systems
-- Understanding human-computer interaction
+Adaptix is designed to be managed easily through **npm**.
 
-Future plans may include:
-- Personalized AI assistants
-- Smart workflow automation
-- Adaptive interfaces
-- Productivity insights
+### Prerequisites
+- [Python 3.10+](https://www.python.org/)
+- [Node.js & npm](https://nodejs.org/)
+
+### Setup
+1. Clone the repository to your local machine (recommended on `D:` drive if `C:` is low on space).
+2. Open your terminal in the project directory.
+3. Run the following command to set up the environment and install dependencies:
+   ```bash
+   npm run setup
+   ```
+
+---
+
+## ⚙️ Configuration
+
+1. **API Keys**:
+   - For **Gemini**: Get a free key at [Google AI Studio](https://aistudio.google.com/).
+   - For **OpenAI**: Get a key at [OpenAI Platform](https://platform.openai.com/).
+2. **Environment File**:
+   - Rename `.env.example` to `.env`.
+   - Add your key to the file (optional, you can also enter it directly in the app).
+
+---
+
+## 🎮 Usage
+
+You can launch Adaptix in two ways:
+
+### Via Terminal (Recommended)
+```bash
+npm start
+```
+
+### Via File Explorer
+Double-click the **`run_adaptix.bat`** file in the project folder.
+
+---
+
+## 🛠️ How It Works
+
+1. **Collector**: A background Python agent uses `PyAutoGUI` and `pywin32` to capture the current screen and the active window title.
+2. **AI Analysis**: The snapshot is sent to your chosen AI provider (Gemini or OpenAI).
+3. **Timeline**: The resulting insight is displayed in the "Behavior Timeline," allowing you to see patterns in your computer usage over time.
+
+---
+
+## 📄 License
+
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
