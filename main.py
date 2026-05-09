@@ -48,8 +48,11 @@ class AdaptixApp(ctk.CTk):
         self.summary_button = ctk.CTkButton(self.sidebar_frame, text="GENERATE REPORT", font=ctk.CTkFont(size=13, weight="bold"), height=40, corner_radius=20, fg_color="transparent", border_width=2, command=self.generate_summary, state="disabled")
         self.summary_button.grid(row=5, column=0, padx=20, pady=10)
 
+        self.history_button = ctk.CTkButton(self.sidebar_frame, text="VIEW HISTORY", font=ctk.CTkFont(size=13, weight="bold"), height=40, corner_radius=20, fg_color="transparent", border_width=1, command=self.view_history)
+        self.history_button.grid(row=6, column=0, padx=20, pady=10)
+
         self.info_label = ctk.CTkLabel(self.sidebar_frame, text="Privacy Active: Local Analysis", font=ctk.CTkFont(size=10), text_color="gray")
-        self.info_label.grid(row=6, column=0, padx=20, pady=(50, 10))
+        self.info_label.grid(row=7, column=0, padx=20, pady=(50, 10))
 
         # Main Content
         self.main_frame = ctk.CTkFrame(self, corner_radius=20, fg_color="#121212")
@@ -73,6 +76,18 @@ class AdaptixApp(ctk.CTk):
                 return json.load(f)
         except Exception:
             return {}
+
+    def view_history(self):
+        try:
+            # Temporary collector to read memory if not already initialized
+            temp_collector = self.collector or AdaptixCollector(provider=self.provider_menu.get().lower())
+            habits = temp_collector.memory.get("long_term_habits", "No history found.")
+
+            self.log_msg("\n--- LONG-TERM MEMORY & HABITS ---")
+            self.log_msg(habits)
+            self.log_msg("----------------------------------\n")
+        except Exception as e:
+            self.log_msg(f"Error loading history: {str(e)}")
 
     def toggle_observing(self):
         if not self.is_observing:

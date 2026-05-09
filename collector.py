@@ -6,6 +6,7 @@ import win32process
 import google.generativeai as genai
 from openai import OpenAI
 import base64
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,6 +15,9 @@ load_dotenv()
 class AdaptixCollector:
     def __init__(self, api_key=None, provider="gemini"):
         self.provider = provider.lower()
+        self.memory_path = "D:\\temp\\adaptix_memory.json"
+        self.memory = self.load_memory()
+
         if self.provider == "gemini":
             self.api_key = api_key or os.getenv("GEMINI_API_KEY")
             if self.api_key:
@@ -48,6 +52,27 @@ class AdaptixCollector:
             return {"title": title, "app": exe}
         except Exception:  # pylint: disable=broad-exception-caught
             return {"title": "Unknown", "app": "Unknown"}
+
+    def load_memory(self):
+        try:
+            if os.path.exists(self.memory_path):
+                with open(self.memory_path, "r") as f:
+                    return json.load(f)
+        except Exception:
+            pass
+        return {"sessions": [], "long_term_habits": "User is new."}
+
+    def save_to_memory(self, session_data, summary):
+        self.memory["sessions"].append(session_data)
+        # We only keep the last 5 sessions to keep the prompt slim
+        self.memory["sessions"] = self.memory["sessions"][-5:]
+        self.memory["long_term_habits"] = summary
+        
+        try:
+            with open(self.memory_path, "w") as f:
+                json.dump(self.memory, f)
+        except Exception:
+            pass
 
     def has_changed(self, current_img, current_window_title):
         # 1. Window Change is a guaranteed "interesting" event
@@ -103,11 +128,14 @@ class AdaptixCollector:
         Analyze this computer activity.
         Active App: {window_info['app']}
         Window Title: {window_info['title']}
+        
+        Long-term Habits (Memory):
+        {self.memory.get('long_term_habits', 'No history yet.')}
 
         Task:
         1. Identify exactly what the user is doing.
         2. Categorize this behavior (e.g., Coding, Browsing, Gaming, Social).
-        3. Note any potential 'habits' if this were a repeated action.
+        3. Compare this to their known long-term habits. Are they sticking to them or doing something new?
         Keep it concise (1 sentence).
         """
 
@@ -169,15 +197,20 @@ class AdaptixCollector:
 
         if self.provider == "gemini":
             response = self.model.generate_content(prompt)
-            return response.text
+            result = response.text
         elif self.provider == "openai":
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=1000,
             )
-            return response.choices[0].message.content
-        return "Unknown provider."
+            result = response.choices[0].message.content
+        else:
+            result = "Unknown provider."
+
+        # Save to memory
+        self.save_to_memory(insights, result)
+        return result
 
 
 if __name__ == "__main__":
