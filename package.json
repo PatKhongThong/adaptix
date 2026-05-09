@@ -5,6 +5,7 @@
   "main": "main.py",
   "scripts": {
     "setup": "python setup.py",
+    "rerun-setup": "python setup.py",
     "start": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\python main.py\"",
     "install-py": "npm run setup"
   },

@@ -155,11 +155,16 @@ class AdaptixCollector:
         {combined_text}
 
         Task:
-        1. Summarize the user's main activities during this session.
-        2. Based on these habits, describe what kind of person this user seems to be (e.g., focused developer, multi-tasking researcher, easily distracted, etc.).
-        3. Provide one piece of advice to improve their productivity based on these habits.
+        Provide a comprehensive behavioral report. Focus on:
+        1. **Apps & Environment**: What specific apps, websites, and tools did the user spend most time on?
+        2. **Communication**: Who did they talk to or interact with (based on window titles/content)?
+        3. **The Role**: Based on the technical and creative tools used, what is this person's likely job or primary goal today?
+        4. **Psychological Profile**: 
+           - What type of person are they (e.g., Deep Thinker, Fast Tasker, Procrastinator)?
+           - Estimated "Digital Age" (How mature/experienced do they seem with technology)?
+        5. **Productivity Audit**: One brutal truth and one constructive tip.
 
-        Be insightful and a bit psychological.
+        Keep the tone insightful, professional, and slightly analytical.
         """
 
         if self.provider == "gemini":

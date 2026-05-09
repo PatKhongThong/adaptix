@@ -19,6 +19,31 @@ def run_command(command):
     except subprocess.CalledProcessError:
         return False
 
+import json
+
+def validate_gemini(key):
+    if not key: return True
+    import google.generativeai as genai
+    try:
+        genai.configure(api_key=key)
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        model.generate_content("test", generation_config={"max_output_tokens": 1})
+        return True
+    except Exception as e:
+        print(f"\033[91mGemini Error: {e}\033[0m")
+        return False
+
+def validate_openai(key):
+    if not key: return True
+    from openai import OpenAI
+    try:
+        client = OpenAI(api_key=key)
+        client.models.list()
+        return True
+    except Exception as e:
+        print(f"\033[91mOpenAI Error: {e}\033[0m")
+        return False
+
 def main():
     clear_screen()
     print_banner()
@@ -26,17 +51,32 @@ def main():
     print("\n[1/3] Configuring AI Services")
     print("-" * 30)
     
-    gemini_key = input("Enter Gemini API Key (press Enter to skip): ").strip()
-    openai_key = input("Enter OpenAI API Key (press Enter to skip): ").strip()
+    while True:
+        gemini_key = input("Enter Gemini API Key (press Enter to skip): ").strip()
+        if validate_gemini(gemini_key): break
+        print("\033[91mInvalid Gemini Key. Please try again.\033[0m")
+
+    while True:
+        openai_key = input("Enter OpenAI API Key (press Enter to skip): ").strip()
+        if validate_openai(openai_key): break
+        print("\033[91mInvalid OpenAI Key. Please try again.\033[0m")
+
+    pref_provider = input("\nWhich provider do you prefer as default? (Gemini/OpenAI): ").strip().lower()
+    if pref_provider not in ["gemini", "openai"]:
+        pref_provider = "gemini"
 
     # Create .env file
-    print("\n[2/3] Generating .env file...")
+    print("\n[2/3] Saving Configuration...")
     with open(".env", "w") as f:
         if gemini_key:
             f.write(f"GEMINI_API_KEY={gemini_key}\n")
         if openai_key:
             f.write(f"OPENAI_API_KEY={openai_key}\n")
-    print("\033[92m✔ .env created successfully.\033[0m")
+    
+    with open("config.json", "w") as f:
+        json.dump({"default_provider": pref_provider}, f)
+        
+    print("\033[92m✔ Configuration saved.\033[0m")
 
     print("\n[3/3] Installing Dependencies (on D: drive)")
     print("-" * 30)
