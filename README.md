@@ -1,71 +1,54 @@
 # 🧠 Adaptix AI
 
-**Adaptix** is a premium, open-source AI tool that learns your computer habits and behaviors to provide insights into your productivity and workflow. It runs locally on your machine, capturing screen context and active application data to build a behavioral profile using state-of-the-art AI.
+**Adaptix** is a premium, open-source AI tool that learns your computer habits and behaviors to provide insights into your productivity and workflow. It runs locally on your machine, capturing screen context to build a behavioral profile using state-of-the-art AI.
 
 ---
 
 ## ✨ Features
 
-- **Ultra-Fast Observation**: Captures snapshots of your screen every **2 seconds** for high-fidelity behavior tracking.
-- **Session Summarization**: Generate deep psychological profiles and productivity summaries at the end of every session.
-- **Dual AI Engine**: Support for both **Gemini 2.0 Flash** and **OpenAI GPT-4o**.
-- **Privacy First**: All data is processed using your personal API keys. Snapshots are stored locally on your machine.
-- **Premium Desktop UI**: A sleek, dark-mode interface built with CustomTkinter.
+- **Deep Content Analysis**: AI inspects your window content (searches, messages, videos) for a true understanding of your work.
+- **Session Summarization**: Friendly, encouraging reports highlight your strengths and achievements.
+- **Long-Term Memory**: The AI learns your habits over time and remembers you across restarts.
+- **Privacy First**: All data is processed using your personal API keys. Data stays on your machine.
+- **Premium Desktop UI**: A sleek, dark-mode interface with a custom logo and archive browser.
 
 ---
 
-## 🚀 Installation
+## 🚀 Quick Start
 
-Adaptix is designed to be managed easily through **npm**.
+Follow these 3 steps to get Adaptix running:
 
-### Prerequisites
-- [Python 3.10+](https://www.python.org/)
-- [Node.js & npm](https://nodejs.org/)
+### 1. Initial Setup
+Configure your API keys (Gemini or OpenAI) and install dependencies automatically:
+```bash
+npm run setup
+```
+*Note: If you don't have a key, the setup will provide links to get one.*
 
-### Setup
-1. Clone the repository to your local machine (recommended on `D:` drive if `C:` is low on space).
-2. Open your terminal in the project directory.
-3. Run the interactive setup to configure your AI keys and install dependencies:
-   ```bash
-   npm run setup
-   ```
-   *The setup will prompt you for your Gemini/OpenAI keys and handle all installation automatically.*
+### 2. Build the Windows App
+Compile the project into a professional standalone application:
+```bash
+npm run build
+```
+
+### 3. Run Adaptix
+Open the newly created **`Adaptix_App`** folder in this directory and double-click **`Adaptix_App.exe`**.
 
 ---
 
 ## ⚙️ Configuration
 
-1. **API Keys**:
-   - For **Gemini**: Get a free key at [Google AI Studio](https://aistudio.google.com/).
-   - For **OpenAI**: Get a key at [OpenAI Platform](https://platform.openai.com/).
-2. **Environment File**:
-   - Rename `.env.example` to `.env`.
-   - Add your key to the file (optional, you can also enter it directly in the app).
-
----
-
-## 🎮 Usage
-
-You can launch Adaptix via terminal:
-
-```bash
-npm start
-```
-
-### Build a Standalone Windows App
-If you want to run Adaptix as a standard Windows application without using the terminal, run:
-```bash
-npm run build
-```
-This will create an **`Adaptix_App/`** folder in the main directory. Open it and run **`Adaptix_App.exe`**.
+- **API Keys**: Managed via the setup script or manually in the `.env` file.
+- **Memory**: Your behavioral history is stored locally in `D:\temp\adaptix_memory.json`.
+- **Default Provider**: Set automatically during setup, can be changed in `config.json`.
 
 ---
 
 ## 🛠️ How It Works
 
-1. **Collector**: A background Python agent uses `PyAutoGUI` and `pywin32` to capture the current screen and the active window title.
-2. **AI Analysis**: The snapshot is sent to your chosen AI provider (Gemini or OpenAI).
-3. **Timeline**: The resulting insight is displayed in the "Behavior Timeline," allowing you to see patterns in your computer usage over time.
+1. **Collector**: A background agent captures your screen every 2 seconds.
+2. **AI Engine**: Snapshots are analyzed by Gemini 2.0 or GPT-4o to identify specific tasks and context.
+3. **Archive**: Every session is summarized and stored in a historical archive for you to review later.
 
 ---
 

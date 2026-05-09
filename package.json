@@ -7,7 +7,7 @@
     "setup": "python setup.py",
     "rerun-setup": "python setup.py",
     "start": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\python main.py\"",
-    "build": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; if (Test-Path dist) { Remove-Item -Recurse -Force dist }; if (Test-Path Adaptix_App) { Remove-Item -Recurse -Force Adaptix_App }; .\\venv\\Scripts\\pip install pyinstaller; .\\venv\\Scripts\\pyinstaller --noconsole --onedir --clean --distpath . --workpath D:/temp/build --add-data 'venv/Lib/site-packages/customtkinter;customtkinter/' --add-data 'logo.png;.' --icon 'icon.ico' --name Adaptix_App main.py\"",
+    "build": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\pip install pyinstaller; .\\venv\\Scripts\\pyinstaller --noconsole --onedir --clean --distpath . --workpath D:/temp/build --collect-all customtkinter --add-data 'logo.png;.' --icon 'icon.ico' --name Adaptix_App main.py\"",
     "install-py": "npm run setup"
   },
   "author": "Adaptix Team",

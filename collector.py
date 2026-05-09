@@ -111,6 +111,11 @@ class AdaptixCollector:
             return base64.b64encode(image_file.read()).decode('utf-8')
 
     def analyze_behavior(self):
+        if self.provider == "gemini" and not self.model:
+            return "ERROR: Gemini API Key missing. Run 'npm run setup' to configure it. Get a key at: https://aistudio.google.com/app/apikey"
+        if self.provider == "openai" and not self.client:
+            return "ERROR: OpenAI API Key missing. Run 'npm run setup' to configure it. Get a key at: https://platform.openai.com/api-keys"
+
         window_info = self.get_active_window_info()
         screenshot = pyautogui.screenshot()
         

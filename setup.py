@@ -94,9 +94,8 @@ def main():
         if validate_key_via_venv("openai", openai_key): break
         print("\033[91mInvalid OpenAI Key. Please try again.\033[0m")
 
-    pref_provider = input("\nWhich provider do you prefer as default? (Gemini/OpenAI): ").strip().lower()
-    if pref_provider not in ["gemini", "openai"]:
-        pref_provider = "gemini"
+    # Default to Gemini if available, else OpenAI
+    pref_provider = "gemini" if gemini_key else ("openai" if openai_key else "gemini")
 
     print("\n[3/3] Saving Configuration...")
     with open(".env", "w") as f:
@@ -112,8 +111,9 @@ def main():
 
     print("\n" + "="*50)
     print("\033[92m🎉 SETUP COMPLETE!\033[0m")
-    print("You can now start Adaptix using:")
-    print("\033[94m  npm start\033[0m")
+    print("You can now build and run Adaptix:")
+    print("\033[94m  1. npm run build\033[0m")
+    print("\033[94m  2. Open Adaptix_App folder and run Adaptix_App.exe\033[0m")
     print("="*50)
 
 if __name__ == "__main__":
