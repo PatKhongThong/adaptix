@@ -4,8 +4,8 @@
   "description": "AI Behavior Learning Tool",
   "main": "main.py",
   "scripts": {
-    "setup": "python3 setup.py || python setup.py",
-    "rerun-setup": "python3 setup.py || python setup.py",
+    "setup": "py setup.py || python3 setup.py || python setup.py",
+    "rerun-setup": "py setup.py || python3 setup.py || python setup.py",
     "start": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\python main.py\"",
     "build": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\pip install pyinstaller; .\\venv\\Scripts\\pyinstaller --noconsole --onedir --clean --distpath . --workpath D:/temp/build --collect-all customtkinter --add-data 'logo.png;.' --icon 'icon.ico' --name Adaptix_App main.py\"",
     "update": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\pyinstaller --clean --noconfirm --distpath . --workpath D:/temp/build Adaptix_App.spec\"",

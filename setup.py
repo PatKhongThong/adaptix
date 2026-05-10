@@ -3,6 +3,14 @@ import subprocess
 import sys
 import json
 
+# Fix Unicode issues on Windows consoles
+if sys.platform == "win32":
+    try:
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    except Exception:
+        pass
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
