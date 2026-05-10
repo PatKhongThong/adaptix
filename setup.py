@@ -24,7 +24,10 @@ def validate_key_via_venv(provider, key):
     """Runs a tiny script inside the venv to validate the key."""
     if not key: return True
     
-    python_exe = os.path.join("venv", "Scripts", "python.exe")
+    if sys.platform == "win32":
+        python_exe = os.path.join("venv", "Scripts", "python.exe")
+    else:
+        python_exe = os.path.join("venv", "bin", "python")
     script = f"""
 import sys
 try:
@@ -61,12 +64,18 @@ def main():
     print("\n[1/3] Installing Dependencies (on D: drive)")
     print("-" * 30)
     
-    # Set TEMP and TMP for D: drive to avoid C: space issues
-    os.environ['TEMP'] = 'D:\\temp'
-    os.environ['TMP'] = 'D:\\temp'
+    # Set TEMP and TMP for D: drive to avoid C: space issues (Windows only)
+    if sys.platform == "win32":
+        os.environ['TEMP'] = 'D:\\temp'
+        os.environ['TMP'] = 'D:\\temp'
     
-    venv_cmd = "python -m venv venv"
-    pip_cmd = ".\\venv\\Scripts\\pip install pyautogui pillow google-generativeai psutil python-dotenv pywin32 customtkinter openai"
+    venv_cmd = f"{sys.executable} -m venv venv"
+    
+    deps = "pyautogui pillow google-generativeai psutil python-dotenv customtkinter openai"
+    if sys.platform == "win32":
+        pip_cmd = f".\\venv\\Scripts\\pip install {deps} pywin32"
+    else:
+        pip_cmd = f"./venv/bin/pip install {deps}"
     
     if not os.path.exists("venv"):
         if run_command(venv_cmd):
@@ -112,8 +121,12 @@ def main():
     print("\n" + "="*50)
     print("\033[92m🎉 SETUP COMPLETE!\033[0m")
     print("You can now build and run Adaptix:")
-    print("\033[94m  1. npm run build\033[0m")
-    print("\033[94m  2. Open Adaptix_App folder and run Adaptix_App.exe\033[0m")
+    if sys.platform == "win32":
+        print("\033[94m  1. npm run build\033[0m")
+        print("\033[94m  2. Open Adaptix_App folder and run Adaptix_App.exe\033[0m")
+    else:
+        print("\033[94m  1. npm run build-macos\033[0m")
+        print("\033[94m  2. Run the Adaptix_App executable in the current folder\033[0m")
     print("="*50)
 
 if __name__ == "__main__":
