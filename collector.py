@@ -1,4 +1,5 @@
 import sys
+import os
 import pyautogui
 import psutil
 if sys.platform == "win32":
@@ -77,6 +78,34 @@ class AdaptixCollector:
                 parts = [p.strip() for p in output.split(',')]
                 app = parts[0] if len(parts) > 0 else "Unknown"
                 title = parts[1] if len(parts) > 1 else "Unknown"
+                return {"title": title, "app": app}
+            except Exception:
+                return {"title": "Unknown", "app": "Unknown"}
+        elif sys.platform.startswith("linux"):
+            try:
+                from subprocess import check_output
+                # Get the active window ID
+                root_output = check_output(['xprop', '-root', '_NET_ACTIVE_WINDOW']).decode('utf-8').strip()
+                window_id = root_output.split()[-1]
+                
+                if window_id == "0x0":
+                    return {"title": "Desktop", "app": "Desktop"}
+
+                # Get the window title
+                title_output = check_output(['xprop', '-id', window_id, '_NET_WM_NAME']).decode('utf-8').strip()
+                # Handle cases where _NET_WM_NAME might be missing or different format
+                if " = " in title_output:
+                    title = title_output.split(' = ')[-1].strip('"')
+                else:
+                    title = "Unknown"
+                
+                # Get the window class (app name)
+                class_output = check_output(['xprop', '-id', window_id, 'WM_CLASS']).decode('utf-8').strip()
+                if " = " in class_output:
+                    app = class_output.split(' = ')[-1].split(',')[-1].strip().strip('"')
+                else:
+                    app = "Unknown"
+                
                 return {"title": title, "app": app}
             except Exception:
                 return {"title": "Unknown", "app": "Unknown"}

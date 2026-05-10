@@ -169,16 +169,19 @@ class AdaptixApp(ctk.CTk):
 
     def toggle_observing(self):
         if not self.is_observing:
-            provider = self.provider_menu.get().lower()
+            try:
+                provider = self.provider_menu.get().lower()
 
-            self.collector = AdaptixCollector(provider=provider)
-            self.is_observing = True
-            self.session_insights = []
-            self.start_button.configure(text="STOP OBSERVING", fg_color="#d9534f", hover_color="#c9302c")
-            self.summary_button.configure(state="disabled")
-            self.status_label.configure(text="● OBSERVING", text_color="#5cb85c")
-            self.log_msg("System: Adaptive observation started (2s snapshots).")
-            threading.Thread(target=self.observation_loop, daemon=True).start()
+                self.collector = AdaptixCollector(provider=provider)
+                self.is_observing = True
+                self.session_insights = []
+                self.start_button.configure(text="STOP OBSERVING", fg_color="#d9534f", hover_color="#c9302c")
+                self.summary_button.configure(state="disabled")
+                self.status_label.configure(text="● OBSERVING", text_color="#5cb85c")
+                self.log_msg("System: Adaptive observation started (2s snapshots).")
+                threading.Thread(target=self.observation_loop, daemon=True).start()
+            except Exception as e:
+                self.log_msg(f"System Error: Failed to initialize collector. {str(e)}")
         else:
             self.is_observing = False
             self.start_button.configure(text="START OBSERVING", fg_color=["#3B8ED0", "#1F6AA5"], hover_color=["#2B7EB0", "#0F5A95"])
@@ -214,7 +217,9 @@ class AdaptixApp(ctk.CTk):
                 insight = self.collector.analyze_behavior()
                 if not insight.startswith("SKIP:"):
                     self.session_insights.append(insight)
-                    # Stay silent as requested - no timeline logging here
+                    if insight.startswith("ERROR:"):
+                        self.log_msg(insight)
+                    # Stay silent for normal insights as requested
             except Exception as e:
                 self.log_msg(f"Error: {str(e)}")
 

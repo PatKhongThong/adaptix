@@ -82,6 +82,13 @@ def main():
     deps = "pyautogui pillow google-generativeai psutil python-dotenv customtkinter openai"
     if sys.platform == "win32":
         pip_cmd = f".\\venv\\Scripts\\pip install {deps} pywin32"
+    elif sys.platform.startswith("linux"):
+        # Linux specific pip dependencies
+        pip_cmd = f"./venv/bin/pip install {deps} python3-xlib"
+        print("\n\033[93m[!] Linux detected. Please ensure you have the following system packages installed:\033[0m")
+        print("    \033[94msudo apt-get update\033[0m")
+        print("    \033[94msudo apt-get install -y scrot python3-tk python3-dev x11-utils\033[0m")
+        print("-" * 30)
     else:
         pip_cmd = f"./venv/bin/pip install {deps}"
     
@@ -132,6 +139,9 @@ def main():
     if sys.platform == "win32":
         print("\033[94m  1. npm run build\033[0m")
         print("\033[94m  2. Open Adaptix_App folder and run Adaptix_App.exe\033[0m")
+    elif sys.platform.startswith("linux"):
+        print("\033[94m  1. npm run build-linux\033[0m")
+        print("\033[94m  2. Run the Adaptix_App executable in the current folder\033[0m")
     else:
         print("\033[94m  1. npm run build-macos\033[0m")
         print("\033[94m  2. Run the Adaptix_App executable in the current folder\033[0m")
