@@ -21,6 +21,52 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 
+class HistoryDashboard(ctk.CTkToplevel):
+    def __init__(self, parent, sessions):
+        super().__init__(parent)
+        self.title("Adaptix - Session History")
+        self.geometry("900x600")
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=3)
+        self.grid_rowconfigure(0, weight=1)
+        
+        self.sessions = sessions
+        
+        # Left sidebar: Session list
+        self.sidebar = ctk.CTkScrollableFrame(self, width=250, label_text="SESSIONS ARCHIVE", label_font=ctk.CTkFont(size=13, weight="bold"))
+        self.sidebar.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        
+        # Right area: Content
+        self.content_frame = ctk.CTkFrame(self, fg_color="#121212", corner_radius=15)
+        self.content_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
+        self.content_frame.grid_columnconfigure(0, weight=1)
+        self.content_frame.grid_rowconfigure(1, weight=1)
+        
+        self.session_title = ctk.CTkLabel(self.content_frame, text="Select a session from the list", font=ctk.CTkFont(size=18, weight="bold", family="Outfit"))
+        self.session_title.grid(row=0, column=0, padx=30, pady=30, sticky="w")
+        
+        self.content_text = ctk.CTkTextbox(self.content_frame, font=ctk.CTkFont(size=14, family="Consolas"), fg_color="#1a1a1a", border_width=1, border_color="#333333")
+        self.content_text.grid(row=1, column=0, padx=30, pady=(0, 30), sticky="nsew")
+        
+        self.after(100, self.lift)
+        self.load_sessions()
+
+    def load_sessions(self):
+        for session in reversed(self.sessions):
+            timestamp = session.get('timestamp', 'Unknown')
+            btn = ctk.CTkButton(self.sidebar, text=timestamp,
+                                 command=lambda s=session: self.display_session(s),
+                                 fg_color="transparent", border_width=1, border_color="#444444",
+                                 hover_color="#333333", anchor="w")
+            btn.pack(fill="x", padx=5, pady=5)
+
+    def display_session(self, session):
+        self.session_title.configure(text=f"SESSION: {session.get('timestamp')}")
+        self.content_text.delete("1.0", "end")
+        self.content_text.insert("1.0", session.get('summary', 'No summary available.'))
+
+
+
 class AdaptixApp(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -105,23 +151,19 @@ class AdaptixApp(ctk.CTk):
     def view_history(self):
         try:
             temp_collector = self.collector or AdaptixCollector(provider=self.provider_menu.get().lower())
-            
-            self.log_msg("\n" + "="*40)
-            self.log_msg("📋 HISTORICAL SESSION ARCHIVE")
-            self.log_msg("="*40)
-            
             sessions = temp_collector.memory.get("sessions", [])
-            if not sessions:
-                self.log_msg("No past sessions found.")
-            else:
-                for i, sess in enumerate(reversed(sessions)):
-                    self.log_msg(f"\n[{i+1}] SESSION: {sess.get('timestamp', 'Unknown Time')}")
-                    self.log_msg(f"Summary: {sess.get('summary', 'No summary')[:300]}...")
             
-            self.log_msg("\n" + "="*40)
-            self.log_msg("🧠 LEARNED LONG-TERM HABITS")
-            self.log_msg(temp_collector.memory.get("long_term_habits", "None yet."))
-            self.log_msg("="*40 + "\n")
+            if not sessions:
+                self.log_msg("System: No past sessions found in memory.")
+                return
+            
+            # Open Dashboard
+            if hasattr(self, "history_dash") and self.history_dash.winfo_exists():
+                self.history_dash.deiconify()
+                self.history_dash.focus()
+            else:
+                self.history_dash = HistoryDashboard(self, sessions)
+                
         except Exception as e:
             self.log_msg(f"Error loading history: {str(e)}")
 

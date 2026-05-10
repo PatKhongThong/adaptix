@@ -7,28 +7,32 @@
 ## ✨ Features
 
 - **Deep Content Analysis**: AI inspects your window content (searches, messages, videos) for a true understanding of your work.
-- **Session Summarization**: Friendly, encouraging reports highlight your strengths and achievements.
+- **Session Summarization**: Hierarchical reports (App > Action > Detail) provide granular insights.
 - **Long-Term Memory**: The AI learns your habits over time and remembers you across restarts.
+- **History Dashboard**: A dedicated archive browser to review all your past sessions in detail.
 - **Privacy First**: All data is processed using your personal API keys. Data stays on your machine.
-- **Premium Desktop UI**: A sleek, dark-mode interface with a custom logo and archive browser.
+- **Premium Desktop UI**: A sleek, dark-mode interface with a custom logo.
 
 ---
 
 ## 🚀 Quick Start
 
-Follow these 3 steps to get Adaptix running:
+Follow these steps to get Adaptix running:
 
 ### 1. Initial Setup
 Configure your API keys (Gemini or OpenAI) and install dependencies automatically:
 ```bash
 npm run setup
 ```
-*Note: If you don't have a key, the setup will provide links to get one.*
 
-### 2. Build the Windows App
-Compile the project into a professional standalone application:
+### 2. Build or Update
+Compile the project into a professional standalone application, or update it after code changes:
 ```bash
+# First time build
 npm run build
+
+# Update after changes
+npm run update
 ```
 
 ### 3. Run Adaptix

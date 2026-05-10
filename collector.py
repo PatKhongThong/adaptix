@@ -194,13 +194,18 @@ class AdaptixCollector:
         {combined_text}
 
         Task:
-        Provide a simple and friendly summary of this session. 
-        Focus on the positive aspects of the user's workflow:
-        1. **What you achieved**: A quick, 2-3 sentence summary of the main things they got done.
-        2. **Your Strengths**: Highlight 2-3 things the user is good at based on their focus (e.g., "Great at staying focused on code", "Very organized researcher").
-        3. **Friendly Tip**: One small, encouraging suggestion to help them even more.
+        Generate a detailed, hierarchical summary of this session. Use the following format strictly:
+        - [App Name]
+          - [Main Action]
+            - [Specific Detail/Sub-action]
+            - [Another Detail]
         
-        Avoid any negative or judgmental language. Keep it simple, clear, and very encouraging.
+        Requirements:
+        1. Group activities by the Application Name.
+        2. For each app, identify the main high-level actions taken.
+        3. For each action, provide granular details or sub-actions (what they did *within* that action).
+        4. Use a clean bulleted list.
+        5. Be precise and avoid generic descriptions.
         """
 
         if self.provider == "gemini":
