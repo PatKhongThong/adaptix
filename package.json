@@ -9,6 +9,8 @@
     "start": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\python main.py\"",
     "build": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\pip install pyinstaller; .\\venv\\Scripts\\pyinstaller --noconsole --onedir --clean --distpath . --workpath D:/temp/build --collect-all customtkinter --add-data 'logo.png;.' --icon 'icon.ico' --name Adaptix_App main.py\"",
     "update": "powershell -ExecutionPolicy Bypass -Command \"$env:TEMP='D:\\temp'; $env:TMP='D:\\temp'; .\\venv\\Scripts\\pyinstaller --clean --noconfirm --distpath . --workpath D:/temp/build Adaptix_App.spec\"",
+    "build-macos": "pip install pyinstaller; pyinstaller --noconsole --onedir --clean --distpath . --collect-all customtkinter --add-data 'logo.png:.' --name Adaptix_App main.py",
+    "update-macos": "pyinstaller --clean --noconfirm --distpath . Adaptix_App.spec",
     "install-py": "npm run setup"
   },
   "author": "Adaptix Team",

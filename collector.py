@@ -1,8 +1,9 @@
-import os
+import sys
 import pyautogui
 import psutil
-import win32gui
-import win32process
+if sys.platform == "win32":
+    import win32gui
+    import win32process
 import google.generativeai as genai
 from openai import OpenAI
 import base64
@@ -15,7 +16,20 @@ load_dotenv()
 class AdaptixCollector:
     def __init__(self, api_key=None, provider="gemini"):
         self.provider = provider.lower()
-        self.memory_path = "D:\\temp\\adaptix_memory.json"
+        
+        # Cross-platform data directory
+        home = os.path.expanduser("~")
+        self.base_dir = os.path.join(home, ".adaptix")
+        if not os.path.exists(self.base_dir):
+            try:
+                os.makedirs(self.base_dir)
+            except Exception:
+                # Fallback to local if home is restricted
+                self.base_dir = "adaptix_data"
+                if not os.path.exists(self.base_dir):
+                    os.makedirs(self.base_dir)
+
+        self.memory_path = os.path.join(self.base_dir, "adaptix_memory.json")
         self.memory = self.load_memory()
 
         if self.provider == "gemini":
@@ -32,8 +46,8 @@ class AdaptixCollector:
             else:
                 self.client = None
 
-        # Ensure temp directory for captures exists on D:
-        self.temp_dir = "D:\\temp\\adaptix_captures"
+        # Ensure temp directory for captures exists
+        self.temp_dir = os.path.join(self.base_dir, "captures")
         if not os.path.exists(self.temp_dir):
             os.makedirs(self.temp_dir)
 
@@ -43,14 +57,31 @@ class AdaptixCollector:
         self.change_threshold = 5.0  # Percentage of pixels that must change
 
     def get_active_window_info(self):
-        try:
-            window = win32gui.GetForegroundWindow()
-            title = win32gui.GetWindowText(window)
-            _, pid = win32process.GetWindowThreadProcessId(window)
-            process = psutil.Process(pid)
-            exe = process.name()
-            return {"title": title, "app": exe}
-        except Exception:  # pylint: disable=broad-exception-caught
+        if sys.platform == "win32":
+            try:
+                window = win32gui.GetForegroundWindow()
+                title = win32gui.GetWindowText(window)
+                _, pid = win32process.GetWindowThreadProcessId(window)
+                process = psutil.Process(pid)
+                exe = process.name()
+                return {"title": title, "app": exe}
+            except Exception:
+                return {"title": "Unknown", "app": "Unknown"}
+        elif sys.platform == "darwin":
+            try:
+                from subprocess import check_output
+                # Use AppleScript to get the frontmost application and its window title
+                script = 'tell application "System Events" to get {name, title} of first process whose frontmost is true'
+                output = check_output(['osascript', '-e', script]).decode('utf-8').strip()
+                # Output format: "App Name, Window Title"
+                parts = [p.strip() for p in output.split(',')]
+                app = parts[0] if len(parts) > 0 else "Unknown"
+                title = parts[1] if len(parts) > 1 else "Unknown"
+                return {"title": title, "app": app}
+            except Exception:
+                return {"title": "Unknown", "app": "Unknown"}
+        else:
+            # Fallback for other OS or failures
             return {"title": "Unknown", "app": "Unknown"}
 
     def load_memory(self):

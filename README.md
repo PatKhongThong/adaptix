@@ -27,6 +27,8 @@ npm run setup
 
 ### 2. Build or Update
 Compile the project into a professional standalone application, or update it after code changes:
+
+**Windows:**
 ```bash
 # First time build
 npm run build
@@ -35,8 +37,18 @@ npm run build
 npm run update
 ```
 
+**macOS:**
+```bash
+# First time build
+npm run build-macos
+
+# Update after changes
+npm run update-macos
+```
+
 ### 3. Run Adaptix
-Open the newly created **`Adaptix_App`** folder in this directory and double-click **`Adaptix_App.exe`**.
+- **Windows**: Open the **`Adaptix_App`** folder and double-click **`Adaptix_App.exe`**.
+- **macOS**: Open the **`Adaptix_App`** folder and double-click the **`Adaptix_App`** executable.
 
 ---
 

@@ -42,10 +42,10 @@ class HistoryDashboard(ctk.CTkToplevel):
         self.content_frame.grid_columnconfigure(0, weight=1)
         self.content_frame.grid_rowconfigure(1, weight=1)
         
-        self.session_title = ctk.CTkLabel(self.content_frame, text="Select a session from the list", font=ctk.CTkFont(size=18, weight="bold", family="Outfit"))
+        self.session_title = ctk.CTkLabel(self.content_frame, text="Select a session from the list", font=ctk.CTkFont(size=18, weight="bold", family=("Outfit", "Helvetica")))
         self.session_title.grid(row=0, column=0, padx=30, pady=30, sticky="w")
         
-        self.content_text = ctk.CTkTextbox(self.content_frame, font=ctk.CTkFont(size=14, family="Consolas"), fg_color="#1a1a1a", border_width=1, border_color="#333333")
+        self.content_text = ctk.CTkTextbox(self.content_frame, font=ctk.CTkFont(size=14, family=("Consolas", "Monaco")), fg_color="#1a1a1a", border_width=1, border_color="#333333")
         self.content_text.grid(row=1, column=0, padx=30, pady=(0, 30), sticky="nsew")
         
         self.after(100, self.lift)
@@ -96,7 +96,7 @@ class AdaptixApp(ctk.CTk):
         except Exception:
             pass
 
-        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="ADAPTIX", font=ctk.CTkFont(size=28, weight="bold", family="Outfit"))
+        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="ADAPTIX", font=ctk.CTkFont(size=28, weight="bold", family=("Outfit", "Helvetica")))
         self.logo_label.grid(row=1, column=0, padx=20, pady=(10, 20))
 
         self.status_card = ctk.CTkFrame(self.sidebar_frame, corner_radius=10, fg_color="#2b2b2b")
@@ -106,7 +106,7 @@ class AdaptixApp(ctk.CTk):
         self.status_label.pack(padx=10, pady=10)
 
         # Provider Selection
-        self.provider_label = ctk.CTkLabel(self.sidebar_frame, text="AI PROVIDER", font=ctk.CTkFont(size=11, weight="bold", family="Outfit"))
+        self.provider_label = ctk.CTkLabel(self.sidebar_frame, text="AI PROVIDER", font=ctk.CTkFont(size=11, weight="bold", family=("Outfit", "Helvetica")))
         self.provider_label.grid(row=3, column=0, padx=20, pady=(20, 0))
 
         self.provider_menu = ctk.CTkOptionMenu(self.sidebar_frame, values=["Gemini", "OpenAI", "DeepSeek"], fg_color="#333333", button_color="#444444")
@@ -134,7 +134,7 @@ class AdaptixApp(ctk.CTk):
         self.header_label = ctk.CTkLabel(self.main_frame, text="BEHAVIOR TIMELINE", font=ctk.CTkFont(size=18, weight="bold"))
         self.header_label.grid(row=0, column=0, padx=30, pady=(30, 20), sticky="w")
 
-        self.log_textbox = ctk.CTkTextbox(self.main_frame, font=ctk.CTkFont(size=13, family="Consolas"), fg_color="#1a1a1a", border_width=1, border_color="#333333")
+        self.log_textbox = ctk.CTkTextbox(self.main_frame, font=ctk.CTkFont(size=13, family=("Consolas", "Monaco")), fg_color="#1a1a1a", border_width=1, border_color="#333333")
         self.log_textbox.grid(row=1, column=0, padx=30, pady=(0, 30), sticky="nsew")
 
         self.is_observing = False
